@@ -85,3 +85,22 @@ async function publicarOpinion() {
   }
 }
 
+async function mostrarOpiniones() {
+  const contenedor = document.getElementById("opiniones");
+  contenedor.innerHTML = "<h2>Opiniones recientes</h2>";
+
+  const snapshot = await db.collection("opiniones").orderBy("fecha", "desc").get();
+
+  snapshot.forEach(doc => {
+    const op = doc.data();
+    const div = document.createElement("div");
+    div.className = "opinion";
+    div.innerHTML = `
+      <h3>${op.titulo}</h3>
+      <p><strong>${op.username}</strong> (${op.fecha.toDate().toLocaleString()})</p>
+      <p>${op.contenido}</p>
+    `;
+    contenedor.appendChild(div);
+  });
+}
+
