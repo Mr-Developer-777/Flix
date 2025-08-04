@@ -44,7 +44,44 @@ function mostrarOpiniones() {
     `;
     contenedor.appendChild(div);
   });
+}// Importante: para Firebase v9 modular
+
+// Configuración de Firebase (poné la tuya acá)
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_DOMINIO.firebaseapp.com",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_BUCKET.appspot.com",
+  messagingSenderId: "TU_SENDER_ID",
+  appId: "TU_APP_ID"
+};
+
+// Inicializar Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Guardar opinión en Firestore
+async function publicarOpinion() {
+  const username = document.getElementById("username").value.trim();
+  const titulo = document.getElementById("titulo").value.trim();
+  const contenido = document.getElementById("contenido").value.trim();
+
+  if (!username || !titulo || !contenido) {
+    alert("Por favor, completá todos los campos.");
+    return;
+  }
+
+  try {
+    await db.collection("opiniones").add({
+      username,
+      titulo,
+      contenido,
+      fecha: new Date()
+    });
+    alert("Opinión guardada!");
+    mostrarOpiniones(); // recargamos opiniones
+  } catch (e) {
+    alert("Error guardando opinión: " + e.message);
+  }
 }
 
-// Mostrar opiniones al cargar la página
-window.onload = mostrarOpiniones;
